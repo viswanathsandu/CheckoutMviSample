@@ -25,7 +25,10 @@ class Cart {
 
     fun addOne(labelToAdd: String) {
         val cartItem = findItemInCart(labelToAdd)
-        cartItem?.let { it.quantity++ }
+        cartItem?.let {
+            it.quantity++
+            cartSummarySubject.onNext(getCartSummary(cartItems))
+        }
     }
 
     fun removeOne(labelToRemove: String) {

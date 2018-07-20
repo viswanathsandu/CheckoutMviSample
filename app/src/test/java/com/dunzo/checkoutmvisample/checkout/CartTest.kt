@@ -123,4 +123,25 @@ class CartTest {
             assertNotTerminated()
         }
     }
+
+    @Test
+    fun `when a product is incremented in the cart, then emit a cart summary`() {
+        // when
+        val testObserver = cart.summaries().test()
+        cart.addProduct(chocolate)
+        cart.addOne(chocolate.label)
+
+        // then
+        val addProductCartSummary = CartSummary(1)
+        val addOneCartSummary = CartSummary(2)
+        with(testObserver) {
+            assertNoErrors()
+            assertValues(addProductCartSummary, addOneCartSummary)
+            assertNotTerminated()
+        }
+    }
+
+    // TODO 2. Notify when product is decremented.
+    // TODO 3. Notify as soon as someone subscribes to the cart.
+    // TODO 4. Add price to product.
 }
