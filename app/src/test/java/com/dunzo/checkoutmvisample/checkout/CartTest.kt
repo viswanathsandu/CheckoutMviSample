@@ -57,4 +57,28 @@ class CartTest {
         assertThat(cartItems)
                 .containsExactly(chocolateCartItem)
     }
+
+    @Test
+    fun `when an item is not present in the cart, adding one does nothing`() {
+        // when
+        cart.addOne(chocolate.label)
+        val cartItems = cart.getCartItems()
+
+        // then
+        assertThat(cartItems)
+                .isEmpty()
+    }
+
+    @Test
+    fun `when an item's quantity is decreased, then remove 1 item from the cart`() {
+        // when
+        cart.addProduct(chocolate)
+        cart.removeOne(chocolate.label)
+        val cartItems = cart.getCartItems()
+
+        // then
+        val chocolateCartItem = CartItem(chocolate, 0)
+        assertThat(cartItems)
+                .containsExactly(chocolateCartItem)
+    }
 }
