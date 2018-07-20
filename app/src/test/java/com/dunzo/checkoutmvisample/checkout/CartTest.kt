@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class CartTest {
-    private val cart = Cart()
+    private val cart = InMemoryCart()
     private val chocolate = Product("Chocolate")
 
     @Test
@@ -189,6 +189,4 @@ class CartTest {
             assertNotTerminated()
         }
     }
-
-    // TODO 4. Add price to product.
 }
