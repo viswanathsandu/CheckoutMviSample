@@ -15,9 +15,9 @@ class CheckoutModelTest {
     private val whiskey = Product("Whiskey", BigDecimal(100))
     private val chakna = Product("Chakna", BigDecimal(5))
 
-    private val addOneEvents = PublishSubject.create<AddOneEvent>()
+    private val changeQuantityEvents = PublishSubject.create<ChangeQuantityEvent>()
     private val bindings = PublishSubject.create<Binding>()
-    private val intentions = CheckoutModelIntentions(addOneEvents)
+    private val intentions = CheckoutModelIntentions(changeQuantityEvents)
     private lateinit var testObserver: TestObserver<CheckoutModelState>
 
     @Before
@@ -78,6 +78,25 @@ class CheckoutModelTest {
         }
     }
 
+    @Test
+    fun `when user clicks on remove one, decrease product quantity by 1`() {
+        // when
+        removeOne(chocolate.label)
+        val removeOneChocolateItems = cart.getCartItems()
+        val removeOneChocolateSummary = CartSummary(2, BigDecimal(105))
+        val removeOneChocolateState = CheckoutModelState(
+                removeOneChocolateItems,
+                removeOneChocolateSummary
+        )
+
+        // then
+        with(testObserver) {
+            assertNoErrors()
+            assertValue(removeOneChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
+            assertNotTerminated()
+        }
+    }
+
     private fun screenIsCreated() {
         bindings.onNext(CREATED)
     }
@@ -87,6 +106,10 @@ class CheckoutModelTest {
     }
 
     private fun addOne(label: String) {
-        addOneEvents.onNext(AddOneEvent(label))
+        changeQuantityEvents.onNext(AddOneEvent(label))
+    }
+
+    private fun removeOne(label: String) {
+        changeQuantityEvents.onNext(RemoveOneEvent(label))
     }
 }

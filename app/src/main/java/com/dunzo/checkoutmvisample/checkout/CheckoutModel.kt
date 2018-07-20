@@ -12,7 +12,8 @@ object CheckoutModel {
     ): Observable<CheckoutModelState> {
         return Observable.merge(
                 bindingsUseCase(bindings, cart),
-                addOneUseCase(intentions.addOne(), cart)
+                addOneUseCase(intentions.addOne(), cart),
+                removeOneUseCase(intentions.removeOne(), cart)
         )
     }
 
@@ -28,10 +29,21 @@ object CheckoutModel {
     private fun addOneUseCase(
             addOneEvents: Observable<AddOneEvent>,
             cart: Cart
-    ): Observable<CheckoutModelState>? {
+    ): Observable<CheckoutModelState> {
         return addOneEvents
                 .map { addOneEvent -> addOneEvent.label }
                 .switchMap { Observable.fromCallable { cart.addOne(it) } }
+                .withLatestFrom(cart.summaries()) { _, cartSummary -> cartSummary }
+                .map { cartSummary -> CheckoutModelState(cart.getCartItems(), cartSummary) }
+    }
+
+    private fun removeOneUseCase(
+            removeOneEvents: Observable<RemoveOneEvent>,
+            cart: Cart
+    ): Observable<CheckoutModelState> {
+        return removeOneEvents
+                .map { removeOneEvent -> removeOneEvent.label }
+                .switchMap { Observable.fromCallable { cart.removeOne(it) } }
                 .withLatestFrom(cart.summaries()) { _, cartSummary -> cartSummary }
                 .map { cartSummary -> CheckoutModelState(cart.getCartItems(), cartSummary) }
     }
