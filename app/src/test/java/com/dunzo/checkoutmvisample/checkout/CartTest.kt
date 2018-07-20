@@ -116,10 +116,11 @@ class CartTest {
         cart.addProduct(chocolate)
 
         // then
+        val emptyCartSummary = CartSummary(0)
         val cartSummary = CartSummary(1)
         with(testObserver) {
             assertNoErrors()
-            assertValue(cartSummary)
+            assertValues(emptyCartSummary, cartSummary)
             assertNotTerminated()
         }
     }
@@ -132,11 +133,12 @@ class CartTest {
         cart.addOne(chocolate.label)
 
         // then
+        val emptyCartSummary = CartSummary(0)
         val addProductCartSummary = CartSummary(1)
         val addOneCartSummary = CartSummary(2)
         with(testObserver) {
             assertNoErrors()
-            assertValues(addProductCartSummary, addOneCartSummary)
+            assertValues(emptyCartSummary, addProductCartSummary, addOneCartSummary)
             assertNotTerminated()
         }
     }
@@ -149,11 +151,12 @@ class CartTest {
         cart.removeOne(chocolate.label)
 
         // then
+        val emptyCartSummary = CartSummary(0)
         val addProductCartSummary = CartSummary(1)
         val removeOneCartSummary = CartSummary(0)
         with(testObserver) {
             assertNoErrors()
-            assertValues(addProductCartSummary, removeOneCartSummary)
+            assertValues(emptyCartSummary, addProductCartSummary, removeOneCartSummary)
             assertNotTerminated()
         }
     }
@@ -169,6 +172,20 @@ class CartTest {
         with(testObserver) {
             assertNoErrors()
             assertValue(addProductCartSummary)
+            assertNotTerminated()
+        }
+    }
+
+    @Test
+    fun `when subscribed to an empty cart, then emit a cart summary`() {
+        // when
+        val testObserver = cart.summaries().test()
+
+        // then
+        val emptyCartSummary = CartSummary(0)
+        with(testObserver) {
+            assertNoErrors()
+            assertValue(emptyCartSummary)
             assertNotTerminated()
         }
     }
