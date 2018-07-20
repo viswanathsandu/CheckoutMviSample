@@ -1,5 +1,5 @@
 package com.dunzo.checkoutmvisample.checkout
 
-data class Item(
+data class Product(
         val label: String
 )

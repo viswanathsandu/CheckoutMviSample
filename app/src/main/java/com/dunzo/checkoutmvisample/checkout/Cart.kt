@@ -1,12 +1,19 @@
 package com.dunzo.checkoutmvisample.checkout
 
 class Cart {
-    private val items: MutableList<Item> = mutableListOf()
+    private val cartItems: MutableList<CartItem> = mutableListOf()
 
-    fun getCartItems(): List<Item> =
-        items
+    fun getCartItems(): List<CartItem> =
+            cartItems
 
-    fun addItem(item: Item) {
-        items.add(item)
+    fun addProduct(product: Product) {
+        val labelToFind = product.label
+        val cartItem = cartItems.find { item -> item.product.label == labelToFind }
+
+        if (cartItem == null) {
+            cartItems.add(CartItem(product, 1))
+        } else {
+            cartItem.quantity++
+        }
     }
 }

@@ -4,33 +4,43 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class CartTest {
+    private val cart = Cart()
+    private val chocolate = Product("Chocolate")
+
     @Test
     fun `when viewing an empty cart, then return empty list`() {
-        // given
-        val cart = Cart()
-
         // when
-        val items = cart.getCartItems()
+        val cartItems = cart.getCartItems()
 
         // then
-        assertThat(items)
+        assertThat(cartItems)
                 .isEmpty()
     }
 
     @Test
     fun `when an item is added to the cart, it can be viewed`() {
-        // given
-        val cart = Cart()
-        val chocolate = Item("Chocolate")
-
         // when
-        cart.addItem(chocolate)
-        val items = cart.getCartItems()
+        cart.addProduct(chocolate)
+        val cartItems = cart.getCartItems()
 
         // then
-        assertThat(items)
+        val chocolateCartItem = CartItem(chocolate, 1)
+        assertThat(cartItems)
                 .hasSize(1)
-        assertThat(items)
-                .containsExactly(chocolate)
+        assertThat(cartItems)
+                .containsExactly(chocolateCartItem)
+    }
+
+    @Test
+    fun `when the same item is added, increment its quantity in the cart`() {
+        // when
+        cart.addProduct(chocolate)
+        cart.addProduct(chocolate)
+        val cartItems = cart.getCartItems()
+
+        // then
+        val chocolateCartItem = CartItem(chocolate, 2)
+        assertThat(cartItems)
+                .containsExactly(chocolateCartItem)
     }
 }
