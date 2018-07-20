@@ -8,7 +8,7 @@ class Cart {
 
     fun addProduct(product: Product) {
         val labelToFind = product.label
-        val cartItem = cartItems.find { item -> item.product.label == labelToFind }
+        val cartItem = findItemInCart(labelToFind)
 
         if (cartItem == null) {
             cartItems.add(CartItem(product, 1))
@@ -16,4 +16,12 @@ class Cart {
             cartItem.quantity++
         }
     }
+
+    fun addOne(labelToAdd: String) {
+        val cartItem = findItemInCart(labelToAdd)
+        cartItem!!.quantity++
+    }
+
+    private fun findItemInCart(labelToAdd: String): CartItem? =
+            cartItems.find { item -> item.product.label == labelToAdd }
 }

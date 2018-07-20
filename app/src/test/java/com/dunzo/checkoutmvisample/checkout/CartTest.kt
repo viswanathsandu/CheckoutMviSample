@@ -43,4 +43,18 @@ class CartTest {
         assertThat(cartItems)
                 .containsExactly(chocolateCartItem)
     }
+
+    @Test
+    fun `when an item's quantity is increased, then add 1 more item to the cart`() {
+        // when
+        cart.addProduct(chocolate)
+        cart.addOne(chocolate.label)
+        cart.addOne(chocolate.label)
+        val cartItems = cart.getCartItems()
+
+        // then
+        val chocolateCartItem = CartItem(chocolate, 3)
+        assertThat(cartItems)
+                .containsExactly(chocolateCartItem)
+    }
 }
