@@ -1,7 +1,12 @@
 package com.dunzo.checkoutmvisample.checkout
 
 class Cart {
-    fun getCartItems(): List<Any> {
-        return emptyList()
+    private val items: MutableList<Item> = mutableListOf()
+
+    fun getCartItems(): List<Item> =
+        items
+
+    fun addItem(item: Item) {
+        items.add(item)
     }
 }
