@@ -1,5 +1,6 @@
 package com.dunzo.checkoutmvisample.checkout
 
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -20,24 +21,27 @@ class Cart {
             cartItem.quantity++
         }
 
-        cartSummarySubject.onNext(getCartSummary(cartItems))
+        publishCartUpdate()
     }
 
     fun addOne(labelToAdd: String) {
         val cartItem = findItemInCart(labelToAdd)
         cartItem?.let {
             it.quantity++
-            cartSummarySubject.onNext(getCartSummary(cartItems))
+            publishCartUpdate()
         }
     }
 
     fun removeOne(labelToRemove: String) {
         val cartItem = findItemInCart(labelToRemove)
-        cartItem?.let { if (it.quantity > 0) it.quantity-- }
+        cartItem?.let {
+            if (it.quantity > 0) it.quantity--
+            publishCartUpdate()
+        }
     }
 
     fun summaries(): Observable<CartSummary> =
-            cartSummarySubject
+            cartSummarySubject.toFlowable(BackpressureStrategy.LATEST).toObservable()
 
     private fun findItemInCart(labelToAdd: String): CartItem? =
             cartItems.find { item -> item.product.label == labelToAdd }
@@ -47,5 +51,9 @@ class Cart {
             previousQuantity, cartItem -> previousQuantity + cartItem.quantity
         }
         return CartSummary(totalQuantity)
+    }
+
+    private fun publishCartUpdate() {
+        cartSummarySubject.onNext(getCartSummary(cartItems))
     }
 }
