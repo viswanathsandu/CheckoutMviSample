@@ -10,17 +10,23 @@ import org.junit.Test
 import java.math.BigDecimal
 
 class CheckoutModelTest {
-    private val bindings = PublishSubject.create<Binding>()
     private val cart: Cart = InMemoryCart()
+    private val chocolate = Product("Chocolate", BigDecimal.TEN)
+    private val whiskey = Product("Whiskey", BigDecimal(100))
+    private val chakna = Product("Chakna", BigDecimal(5))
+
+    private val addOneEvents = PublishSubject.create<AddOneEvent>()
+    private val bindings = PublishSubject.create<Binding>()
+    private val intentions = CheckoutModelIntentions(addOneEvents)
     private lateinit var testObserver: TestObserver<CheckoutModelState>
 
     @Before
     fun setup() {
-        cart.addProduct(Product("Chocolate", BigDecimal.TEN))
-        cart.addProduct(Product("Whiskey", BigDecimal(100)))
-        cart.addProduct(Product("Chakna", BigDecimal(5)))
+        cart.addProduct(chocolate)
+        cart.addProduct(whiskey)
+        cart.addProduct(chakna)
 
-        testObserver = CheckoutModel.bind(bindings, cart).test()
+        testObserver = CheckoutModel.bind(intentions, bindings, cart).test()
     }
 
     @Test
@@ -53,11 +59,34 @@ class CheckoutModelTest {
         }
     }
 
+    @Test
+    fun `when user clicks on add one, increase product quantity by 1`() {
+        // when
+        addOne(chocolate.label)
+        val addOneMoreChocolateItems = cart.getCartItems()
+        val addOneMoreChocolateSummary = CartSummary(4, BigDecimal(125))
+        val addOneMoreChocolateState = CheckoutModelState(
+                addOneMoreChocolateItems,
+                addOneMoreChocolateSummary
+        )
+
+        // then
+        with(testObserver) {
+            assertNoErrors()
+            assertValue(addOneMoreChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
+            assertNotTerminated()
+        }
+    }
+
     private fun screenIsCreated() {
         bindings.onNext(CREATED)
     }
 
     private fun screenIsRestored() {
         bindings.onNext(RESTORED)
+    }
+
+    private fun addOne(label: String) {
+        addOneEvents.onNext(AddOneEvent(label))
     }
 }
