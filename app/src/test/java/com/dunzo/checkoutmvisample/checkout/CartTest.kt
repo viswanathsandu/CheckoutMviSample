@@ -107,4 +107,20 @@ class CartTest {
         assertThat(cartItems)
                 .containsExactly(chocolateCartItem)
     }
+
+    @Test
+    fun `when a product is added to the cart, then emit a cart summary`() {
+        // when
+        val testObserver = cart.summaries().test()
+
+        cart.addProduct(chocolate)
+
+        // then
+        val cartSummary = CartSummary(1)
+        with(testObserver) {
+            assertNoErrors()
+            assertValue(cartSummary)
+            assertNotTerminated()
+        }
+    }
 }
