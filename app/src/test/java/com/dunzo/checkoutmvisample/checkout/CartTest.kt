@@ -158,8 +158,20 @@ class CartTest {
         }
     }
 
-    // TODO 3. Notify as soon as someone subscribes to the cart.
+    @Test
+    fun `when subscribed to a non-empty cart, then emit a cart summary`() {
+        // when
+        cart.addProduct(chocolate)
+        val testObserver = cart.summaries().test()
 
+        // then
+        val addProductCartSummary = CartSummary(1)
+        with(testObserver) {
+            assertNoErrors()
+            assertValue(addProductCartSummary)
+            assertNotTerminated()
+        }
+    }
 
     // TODO 4. Add price to product.
 }

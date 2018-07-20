@@ -2,11 +2,12 @@ package com.dunzo.checkoutmvisample.checkout
 
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 class Cart {
     private val cartItems: MutableList<CartItem> = mutableListOf()
-    private val cartSummarySubject = PublishSubject.create<CartSummary>()
+    private val cartSummarySubject = BehaviorSubject.create<CartSummary>()
 
     fun getCartItems(): List<CartItem> =
             cartItems
