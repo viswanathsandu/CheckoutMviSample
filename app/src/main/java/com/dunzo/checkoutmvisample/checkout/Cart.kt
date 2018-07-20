@@ -24,7 +24,7 @@ class Cart {
 
     fun removeOne(labelToRemove: String) {
         val cartItem = findItemInCart(labelToRemove)
-        cartItem!!.quantity--
+        cartItem?.let { if (it.quantity > 0) it.quantity-- }
     }
 
     private fun findItemInCart(labelToAdd: String): CartItem? =

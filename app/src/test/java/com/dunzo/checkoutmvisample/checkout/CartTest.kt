@@ -81,4 +81,30 @@ class CartTest {
         assertThat(cartItems)
                 .containsExactly(chocolateCartItem)
     }
+
+    @Test
+    fun `when an item is not present in the cart, removing one does nothing`() {
+        // when
+        cart.removeOne(chocolate.label)
+        val cartItems = cart.getCartItems()
+
+        // then
+        assertThat(cartItems)
+                .isEmpty()
+    }
+
+    @Test
+    fun `when an item is removed multiple times, then quantity cannot be negative`() {
+        // when
+        cart.addProduct(chocolate)
+        cart.removeOne(chocolate.label)
+        cart.removeOne(chocolate.label)
+        cart.removeOne(chocolate.label)
+        val cartItems = cart.getCartItems()
+
+        // then
+        val chocolateCartItem = CartItem(chocolate, 0)
+        assertThat(cartItems)
+                .containsExactly(chocolateCartItem)
+    }
 }
