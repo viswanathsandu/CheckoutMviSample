@@ -212,6 +212,21 @@ class CartTest {
         }
     }
 
-    // 2. Add one product and make it zero.
-    // 3. Add one product and increment.
+    @Test
+    fun `when a product quantity becomes zero, its total price should be zero`() {
+        // when
+        val testObserver = cart.summaries().test()
+        cart.addProduct(chocolate)
+        cart.removeOne(chocolate.label)
+
+        // then
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
+        val oneChocolateSummary = CartSummary(1, chocolate.price)
+
+        with(testObserver) {
+            assertNoErrors()
+            assertValues(emptyCartSummary, oneChocolateSummary, emptyCartSummary)
+            assertNotTerminated()
+        }
+    }
 }
