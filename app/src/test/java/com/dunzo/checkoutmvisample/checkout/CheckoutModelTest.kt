@@ -17,8 +17,8 @@ class CheckoutModelTest {
 
     private val changeQuantityEvents = PublishSubject.create<ChangeQuantityEvent>()
     private val bindings = PublishSubject.create<Binding>()
-    private val intentions = CheckoutModelIntentions(changeQuantityEvents)
-    private lateinit var testObserver: TestObserver<CheckoutModelState>
+    private val intentions = CheckoutIntentions(changeQuantityEvents)
+    private lateinit var testObserver: TestObserver<CheckoutState>
 
     @Before
     fun setup() {
@@ -39,7 +39,7 @@ class CheckoutModelTest {
         val cartSummary = CartSummary(3, BigDecimal(115))
         with(testObserver) {
             assertNoErrors()
-            assertValue(CheckoutModelState(items, cartSummary))
+            assertValue(CheckoutState(items, cartSummary))
             assertNotTerminated()
         }
     }
@@ -54,7 +54,7 @@ class CheckoutModelTest {
         val cartSummary = CartSummary(3, BigDecimal(115))
         with(testObserver) {
             assertNoErrors()
-            assertValue(CheckoutModelState(items, cartSummary))
+            assertValue(CheckoutState(items, cartSummary))
             assertNotTerminated()
         }
     }
@@ -65,7 +65,7 @@ class CheckoutModelTest {
         addOne(chocolate.label)
         val addOneMoreChocolateItems = cart.getCartItems()
         val addOneMoreChocolateSummary = CartSummary(4, BigDecimal(125))
-        val addOneMoreChocolateState = CheckoutModelState(
+        val addOneMoreChocolateState = CheckoutState(
                 addOneMoreChocolateItems,
                 addOneMoreChocolateSummary
         )
@@ -84,7 +84,7 @@ class CheckoutModelTest {
         removeOne(chocolate.label)
         val removeOneChocolateItems = cart.getCartItems()
         val removeOneChocolateSummary = CartSummary(2, BigDecimal(105))
-        val removeOneChocolateState = CheckoutModelState(
+        val removeOneChocolateState = CheckoutState(
                 removeOneChocolateItems,
                 removeOneChocolateSummary
         )

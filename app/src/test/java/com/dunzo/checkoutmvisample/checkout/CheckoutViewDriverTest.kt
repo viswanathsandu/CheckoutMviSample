@@ -16,7 +16,7 @@ class CheckoutViewDriverTest {
         val chocolate = Product("Chocolate", BigDecimal.TEN)
         val cartItems = listOf(CartItem(chocolate, 1))
         val cartSummary = CartSummary(1, chocolate.price)
-        val state = CheckoutModelState(cartItems, cartSummary)
+        val state = CheckoutState(cartItems, cartSummary)
 
         // when
         checkoutViewDriver.render(state)

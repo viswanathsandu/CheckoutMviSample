@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/title_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/action_layout"
+        android:text="Title"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:id="@+id/action_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true">
+
+        <Button
+            android:id="@+id/remove_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/quantity_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/add_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="+" />
+    </LinearLayout>
+</RelativeLayout>

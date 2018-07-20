@@ -15,7 +15,7 @@ class CounterIntentions(
 }
 */
 
-class CheckoutModelIntentions(
+class CheckoutIntentions(
         private val changeQuantityEvents: Observable<ChangeQuantityEvent> // RecyclerView
 ) {
     fun addOne(): Observable<AddOneEvent> =
