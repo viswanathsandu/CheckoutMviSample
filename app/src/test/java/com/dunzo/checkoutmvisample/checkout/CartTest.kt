@@ -2,10 +2,11 @@ package com.dunzo.checkoutmvisample.checkout
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.math.BigDecimal
 
 class CartTest {
     private val cart = InMemoryCart()
-    private val chocolate = Product("Chocolate")
+    private val chocolate = Product("Chocolate", BigDecimal.ONE)
 
     @Test
     fun `when viewing an empty cart, then return empty list`() {
