@@ -117,8 +117,8 @@ class CartTest {
         cart.addProduct(chocolate)
 
         // then
-        val emptyCartSummary = CartSummary(0)
-        val cartSummary = CartSummary(1)
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
+        val cartSummary = CartSummary(1, chocolate.price)
         with(testObserver) {
             assertNoErrors()
             assertValues(emptyCartSummary, cartSummary)
@@ -134,9 +134,9 @@ class CartTest {
         cart.addOne(chocolate.label)
 
         // then
-        val emptyCartSummary = CartSummary(0)
-        val addProductCartSummary = CartSummary(1)
-        val addOneCartSummary = CartSummary(2)
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
+        val addProductCartSummary = CartSummary(1, chocolate.price)
+        val addOneCartSummary = CartSummary(2, chocolate.price * BigDecimal(2))
         with(testObserver) {
             assertNoErrors()
             assertValues(emptyCartSummary, addProductCartSummary, addOneCartSummary)
@@ -152,9 +152,9 @@ class CartTest {
         cart.removeOne(chocolate.label)
 
         // then
-        val emptyCartSummary = CartSummary(0)
-        val addProductCartSummary = CartSummary(1)
-        val removeOneCartSummary = CartSummary(0)
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
+        val addProductCartSummary = CartSummary(1, chocolate.price)
+        val removeOneCartSummary = CartSummary(0, BigDecimal.ZERO)
         with(testObserver) {
             assertNoErrors()
             assertValues(emptyCartSummary, addProductCartSummary, removeOneCartSummary)
@@ -169,7 +169,7 @@ class CartTest {
         val testObserver = cart.summaries().test()
 
         // then
-        val addProductCartSummary = CartSummary(1)
+        val addProductCartSummary = CartSummary(1, chocolate.price)
         with(testObserver) {
             assertNoErrors()
             assertValue(addProductCartSummary)
@@ -183,11 +183,35 @@ class CartTest {
         val testObserver = cart.summaries().test()
 
         // then
-        val emptyCartSummary = CartSummary(0)
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
         with(testObserver) {
             assertNoErrors()
             assertValue(emptyCartSummary)
             assertNotTerminated()
         }
     }
+
+    @Test
+    fun `when a product is added, compute its total price based on quantity`() {
+        // when
+        val testObserver = cart.summaries().test()
+        cart.addProduct(chocolate)
+        cart.addOne(chocolate.label)
+        cart.addOne(chocolate.label)
+
+        // then
+        val emptyCartSummary = CartSummary(0, BigDecimal.ZERO)
+        val oneChocolateSummary = CartSummary(1, chocolate.price)
+        val twoChocolatesSummary = CartSummary(2, chocolate.price.multiply(BigDecimal(2)))
+        val threeChocolatesSummary = CartSummary(3, chocolate.price.multiply(BigDecimal(3)))
+
+        with(testObserver) {
+            assertNoErrors()
+            assertValues(emptyCartSummary, oneChocolateSummary, twoChocolatesSummary, threeChocolatesSummary)
+            assertNotTerminated()
+        }
+    }
+
+    // 2. Add one product and make it zero.
+    // 3. Add one product and increment.
 }

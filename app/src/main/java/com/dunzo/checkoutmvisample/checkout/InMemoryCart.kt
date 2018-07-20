@@ -3,6 +3,7 @@ package com.dunzo.checkoutmvisample.checkout
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import java.math.BigDecimal
 
 class InMemoryCart : Cart {
     private val cartItems: MutableList<CartItem> = mutableListOf()
@@ -47,10 +48,12 @@ class InMemoryCart : Cart {
             cartItems.find { item -> item.product.label == labelToAdd }
 
     private fun getCartSummary(cartItems: List<CartItem>): CartSummary {
-        val totalQuantity = cartItems.fold(0) {
-            previousQuantity, cartItem -> previousQuantity + cartItem.quantity
+        return cartItems.fold(CartSummary(0, BigDecimal.ZERO)) { previousSummary, cartItem ->
+            CartSummary(
+                    previousSummary.totalQuantity + cartItem.quantity,
+                    previousSummary.totalPrice + cartItem.product.price * BigDecimal(cartItem.quantity)
+            )
         }
-        return CartSummary(totalQuantity)
     }
 
     private fun publishCartUpdate() {
