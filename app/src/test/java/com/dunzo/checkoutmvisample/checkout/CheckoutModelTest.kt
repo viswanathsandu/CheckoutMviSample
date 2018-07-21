@@ -61,6 +61,9 @@ class CheckoutModelTest {
 
     @Test
     fun `when user clicks on add one, increase product quantity by 1`() {
+        // given
+        screenIsCreated()
+
         // when
         addOne(chocolate.label)
         val addOneMoreChocolateItems = cart.getCartItems()
@@ -73,13 +76,16 @@ class CheckoutModelTest {
         // then
         with(testObserver) {
             assertNoErrors()
-            assertValue(addOneMoreChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
+            assertValueAt(1, addOneMoreChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
             assertNotTerminated()
         }
     }
 
     @Test
     fun `when user clicks on remove one, decrease product quantity by 1`() {
+        // given
+        screenIsCreated()
+
         // when
         removeOne(chocolate.label)
         val removeOneChocolateItems = cart.getCartItems()
@@ -92,7 +98,7 @@ class CheckoutModelTest {
         // then
         with(testObserver) {
             assertNoErrors()
-            assertValue(removeOneChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
+            assertValueAt(1, removeOneChocolateState) // TODO(rj) 20/Jun/18 - Ensure values are deep copied.
             assertNotTerminated()
         }
     }

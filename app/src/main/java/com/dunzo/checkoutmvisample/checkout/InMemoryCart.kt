@@ -49,10 +49,9 @@ class InMemoryCart : Cart {
 
     private fun getCartSummary(cartItems: List<CartItem>): CartSummary {
         return cartItems.fold(CartSummary(0, BigDecimal.ZERO)) { previousSummary, cartItem ->
-            CartSummary(
-                    previousSummary.totalQuantity + cartItem.quantity,
-                    previousSummary.totalPrice + cartItem.product.price * BigDecimal(cartItem.quantity)
-            )
+            val quantity = previousSummary.totalQuantity + cartItem.quantity
+            val price = previousSummary.totalPrice + cartItem.product.price * BigDecimal(cartItem.quantity)
+            return@fold CartSummary(quantity, price)
         }
     }
 

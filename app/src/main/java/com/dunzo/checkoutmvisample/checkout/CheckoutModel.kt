@@ -2,7 +2,6 @@ package com.dunzo.checkoutmvisample.checkout
 
 import com.dunzo.checkoutmvisample.mvi.Binding
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.withLatestFrom
 
 object CheckoutModel {
     fun bind(
@@ -22,8 +21,8 @@ object CheckoutModel {
             cart: Cart
     ): Observable<CheckoutState> {
         return bindings
-                .withLatestFrom(cart.summaries()) { _, cartSummary -> cartSummary }
-                .map { cartSummary -> CheckoutState(cart.getCartItems(), cartSummary) }
+                .switchMap { cart.summaries() }
+                .map { cartSummary ->  CheckoutState(cart.getCartItems(), cartSummary) }
     }
 
     private fun addOneUseCase(
@@ -32,9 +31,8 @@ object CheckoutModel {
     ): Observable<CheckoutState> {
         return addOneEvents
                 .map { addOneEvent -> addOneEvent.label }
-                .switchMap { Observable.fromCallable { cart.addOne(it) } }
-                .withLatestFrom(cart.summaries()) { _, cartSummary -> cartSummary }
-                .map { cartSummary -> CheckoutState(cart.getCartItems(), cartSummary) }
+                .flatMap { Observable.fromCallable { cart.addOne(it) } }
+                .flatMap { Observable.empty<CheckoutState>() }
     }
 
     private fun removeOneUseCase(
@@ -43,8 +41,7 @@ object CheckoutModel {
     ): Observable<CheckoutState> {
         return removeOneEvents
                 .map { removeOneEvent -> removeOneEvent.label }
-                .switchMap { Observable.fromCallable { cart.removeOne(it) } }
-                .withLatestFrom(cart.summaries()) { _, cartSummary -> cartSummary }
-                .map { cartSummary -> CheckoutState(cart.getCartItems(), cartSummary) }
+                .flatMap { Observable.fromCallable { cart.removeOne(it) } }
+                .flatMap { Observable.empty<CheckoutState>() }
     }
 }
