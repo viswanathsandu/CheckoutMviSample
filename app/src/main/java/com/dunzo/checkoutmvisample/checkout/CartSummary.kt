@@ -8,4 +8,8 @@ import java.math.BigDecimal
 data class CartSummary(
         val totalQuantity: Int,
         val totalPrice: BigDecimal
-) : Parcelable
+) : Parcelable {
+  companion object {
+    val EMPTY = CartSummary(0, BigDecimal.ZERO)
+  }
+}
